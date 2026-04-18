@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { FileText, Image, Video, Star, Trash2 } from "lucide-react";
 import { FileContext } from "../context/FileContext";
+import ShareModal from "./ShareModal";
+import { useState } from "react";
 
 // 🔹 File Icon
 const getIcon = (name) => {
@@ -12,6 +14,7 @@ const getIcon = (name) => {
 };
 
 function FileCard({ file }) {
+  const [showShare, setShowShare] = useState(false);
 const {toggleFavorite, deleteFile } = useContext(FileContext);
 
 console.log("DELETE FILE:", file);
@@ -50,6 +53,11 @@ console.log("DELETE FILE:", file);
         >
           ⬇
         </button>
+     
+<button onClick={() => setShowShare(true)}>
+  🔗
+</button>
+
 
         {/* 🗑 Delete (API later) */}
         <button onClick={() => deleteFile(file.id, file.fileUrl)}>
@@ -60,7 +68,12 @@ console.log("DELETE FILE:", file);
 </button>
 
       </div>
+      {showShare && (
+  <ShareModal file={file} onClose={() => setShowShare(false)} />
+)}
     </div>
+
+    
   );
 }
 
