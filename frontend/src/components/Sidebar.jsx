@@ -22,17 +22,11 @@ function Sidebar() {
     { name: "Profile", path: "/profile", icon: <User size={18} /> },
   ];
 
+  // ✅ FIXED (only one function)
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem("isLoggedIn");
+    navigate("/");
   };
-
-
-  const handleLogout = () => {
-  localStorage.removeItem("isLoggedIn");
-  navigate("/");
-};
-
 
   return (
     <div className="w-64 h-screen bg-white dark:bg-gray-900 text-black dark:text-white border-r dark:border-gray-800 p-5 flex flex-col justify-between">
