@@ -1,34 +1,39 @@
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
 
-const handleLogin = (e) => {
-  e.preventDefault();
+  const [loading, setLoading] = useState(false);
 
-  // store login state (temporary)
-  localStorage.setItem("isLoggedIn", "true");
+  // ✅ Redirect if already logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-  // redirect
-  navigate("/dashboard");
-};
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
-useEffect(() => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  // ✅ Normal Login
+  const handleLogin = (e) => {
+    e.preventDefault();
 
-  if (isLoggedIn) {
-    navigate("/dashboard");
-  }
-}, []);
+    setLoading(true);
 
+    setTimeout(() => {
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("/dashboard");
+    }, 500);
+  };
 
+  // ✅ Google Login (dummy)
   const handleGoogleLogin = () => {
     setLoading(true);
 
     setTimeout(() => {
-      localStorage.setItem("token", "google_dummy_login");
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/dashboard");
     }, 1000);
   };
@@ -48,29 +53,31 @@ useEffect(() => {
         </p>
 
         {/* Form */}
-        <div className="mt-6 flex flex-col gap-4">
+        <form onSubmit={handleLogin} className="mt-6 flex flex-col gap-4">
 
           <input
             type="email"
             placeholder="Email address"
+            required
             className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
 
           <input
             type="password"
             placeholder="Password"
+            required
             className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
 
           <button
-            onClick={handleLogin}
+            type="submit"
             disabled={loading}
             className="bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
-        </div>
+        </form>
 
         {/* Divider */}
         <div className="flex items-center gap-2 my-6">
@@ -86,7 +93,7 @@ useEffect(() => {
           className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-lg hover:bg-gray-50 transition"
         >
           <FcGoogle size={20} />
-          Sign in with Google
+          {loading ? "Signing in..." : "Sign in with Google"}
         </button>
 
         {/* Footer */}
