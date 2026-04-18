@@ -19,20 +19,15 @@ import FileView from "./pages/FileView";
 function App() {
   const [search, setSearch] = useState("");
 
-  const isLoggedIn = localStorage.getItem("token");
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <Routes>
-       
 
-       <Route
-  path="/dashboard"
-  element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
-/>
       {/* 🌟 Splash */}
       <Route path="/" element={<Splash />} />
 
-      {/* 🔓 Public Route */}
+      {/* 🔓 Login */}
       <Route
         path="/login"
         element={
@@ -66,6 +61,7 @@ function App() {
                     <Route path="/favorites" element={<Favorites />} />
                     <Route path="/trash" element={<Trash />} />
                     <Route path="/file/:id" element={<FileView />} />
+
                     {/* Default */}
                     <Route path="*" element={<Navigate to="/dashboard" />} />
                   </Routes>
