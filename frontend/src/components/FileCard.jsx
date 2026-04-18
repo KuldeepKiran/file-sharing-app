@@ -1,12 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FileText, Image, Video, Star, Trash2 } from "lucide-react";
 import { FileContext } from "../context/FileContext";
 import ShareModal from "./ShareModal";
-import { useState } from "react";
 
 // 🔹 File Icon
-const getIcon = (name) => {
-  if (name.endsWith(".png") || name.endsWith(".jpg"))
+const getIcon = (name = "") => {
+  if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"))
     return <Image size={20} />;
   if (name.endsWith(".mp4"))
     return <Video size={20} />;
@@ -15,31 +15,42 @@ const getIcon = (name) => {
 
 function FileCard({ file }) {
   const [showShare, setShowShare] = useState(false);
-const {toggleFavorite, deleteFile } = useContext(FileContext);
+  const { toggleFavorite, deleteFile } = useContext(FileContext);
+  const navigate = useNavigate();
 
-console.log("DELETE FILE:", file);
+  console.log("DELETE FILE:", file);
+
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-xl shadow flex justify-between items-center hover:shadow-lg transition">
       
       {/* Left Section */}
       <div className="flex items-center gap-3">
+        
         <div className="text-gray-600 dark:text-gray-300">
           {getIcon(file.fileName)}
         </div>
 
         <div>
-          <p className="font-medium">{file.fileName}</p>
+          {/* ✅ CLICKABLE FILE NAME */}
+          <p
+            onClick={() => navigate(`/file/${file.id}`)}
+            className="font-medium cursor-pointer hover:text-indigo-600"
+          >
+            {file.fileName}
+          </p>
+
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {file.size || "—"}
           </p>
         </div>
+
       </div>
 
       {/* Right Actions */}
       <div className="flex items-center gap-4">
 
-        {/* ⭐ Favorite (UI only for now) */}
-        <button onClick={() => alert("Favorite API coming soon")}>
+        {/* ⭐ Favorite */}
+        <button onClick={() => toggleFavorite?.(file.id)}>
           <Star
             size={18}
             className="cursor-pointer text-gray-400 hover:text-yellow-500"
@@ -53,27 +64,37 @@ console.log("DELETE FILE:", file);
         >
           ⬇
         </button>
-     
-<button onClick={() => setShowShare(true)}>
-  🔗
-</button>
 
+        {/* 🔗 Share */}
+        <button onClick={() => setShowShare(true)}>
+          🔗
+        </button>
 
-        {/* 🗑 Delete (API later) */}
-        <button onClick={() => deleteFile(file.id, file.fileUrl)}>
-  <Trash2
-    size={18}
-    className="text-red-500 hover:text-red-700 dark:hover:text-red-400 cursor-pointer"
-  />
-</button>
+        {/* 🗑 Delete with Confirmation */}
+        <button
+          onClick={() => {
+            const confirmDelete = window.confirm(
+              `Are you sure you want to delete "${file.fileName}"?`
+            );
+
+            if (confirmDelete) {
+              deleteFile(file.id, file.fileUrl);
+            }
+          }}
+        >
+          <Trash2
+            size={18}
+            className="text-red-500 hover:text-red-700 dark:hover:text-red-400 cursor-pointer"
+          />
+        </button>
 
       </div>
-      {showShare && (
-  <ShareModal file={file} onClose={() => setShowShare(false)} />
-)}
-    </div>
 
-    
+      {/* Share Modal */}
+      {showShare && (
+        <ShareModal file={file} onClose={() => setShowShare(false)} />
+      )}
+    </div>
   );
 }
 
