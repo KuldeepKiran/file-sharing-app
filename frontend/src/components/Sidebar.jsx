@@ -27,6 +27,13 @@ function Sidebar() {
     navigate("/login");
   };
 
+
+  const handleLogout = () => {
+  localStorage.removeItem("isLoggedIn");
+  navigate("/");
+};
+
+
   return (
     <div className="w-64 h-screen bg-white dark:bg-gray-900 text-black dark:text-white border-r dark:border-gray-800 p-5 flex flex-col justify-between">
       

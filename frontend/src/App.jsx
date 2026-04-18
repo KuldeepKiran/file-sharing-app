@@ -23,7 +23,12 @@ function App() {
 
   return (
     <Routes>
+       
 
+       <Route
+  path="/dashboard"
+  element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
+/>
       {/* 🌟 Splash */}
       <Route path="/" element={<Splash />} />
 

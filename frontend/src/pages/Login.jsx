@@ -5,17 +5,24 @@ import { useState } from "react";
 function Login() {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+const handleLogin = (e) => {
+  e.preventDefault();
 
-  const handleLogin = () => {
-    setLoading(true);
+  // store login state (temporary)
+  localStorage.setItem("isLoggedIn", "true");
 
-    // fake delay to simulate login
-    setTimeout(() => {
-      localStorage.setItem("token", "dummy_user_logged_in");
-      navigate("/dashboard");
-    }, 1000);
-  };
+  // redirect
+  navigate("/dashboard");
+};
+
+useEffect(() => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  if (isLoggedIn) {
+    navigate("/dashboard");
+  }
+}, []);
+
 
   const handleGoogleLogin = () => {
     setLoading(true);
