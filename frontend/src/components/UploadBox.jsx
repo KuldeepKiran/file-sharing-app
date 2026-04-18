@@ -79,7 +79,7 @@ function Upload() {
               className="w-32 h-32 object-cover mx-auto rounded-lg shadow"
             />
             <p className="text-sm mt-2 text-gray-600 dark:text-gray-300">
-              {file.name}
+              {file.fileName}
             </p>
           </div>
         )}

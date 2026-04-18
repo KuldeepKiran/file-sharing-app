@@ -37,7 +37,7 @@ function Upload() {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    fileName: file.name,
+    fileName: file.fileName,
     fileType: file.type,
   }),
 });
