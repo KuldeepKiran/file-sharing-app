@@ -33,8 +33,7 @@ function Dashboard({ search }) {
       return;
     }
 
-    const fileNames = files.map((f) => f.fileName).join("\n");
-
+    const fileNames = files.map((f) => f.fileName || "Unnamed File").join("\n");
     const selectedName = prompt(
       `Enter file name to share:\n\n${fileNames}`
     );
@@ -42,7 +41,7 @@ function Dashboard({ search }) {
     if (!selectedName) return;
 
     const file = files.find(
-      (f) => f.fileName.toLowerCase() === selectedName.toLowerCase()
+      (f) => (f.fileName || "Unnamed File").toLowerCase() === selectedName.toLowerCase()
     );
 
     if (!file) {
@@ -59,9 +58,9 @@ function Dashboard({ search }) {
   };
 
   // Filter files
-  const filteredFiles = files.filter((file) =>
-    file.fileName.toLowerCase().includes(search.toLowerCase())
-  );
+ const filteredFiles = files.filter((file) =>
+  file?.fileName?.toLowerCase().includes(search?.toLowerCase() || "")
+);
 
   // Calculate size (if backend provides size later)
   const totalSize = 0;
