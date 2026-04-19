@@ -4,8 +4,8 @@ import { FileText, Image, Video, FileArchive, RotateCcw, Trash2 } from "lucide-r
 const BASE_URL = "https://qfsnl6ahcd.execute-api.ap-south-1.amazonaws.com/dev";
 
 // 📄 File Icon
-const getIcon = (name) => {
-  if (name.endsWith(".png") || name.endsWith(".jpg"))
+const getIcon = (name = "") => {
+  if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"))
     return <Image className="text-gray-500 dark:text-gray-300" />;
   if (name.endsWith(".mp4"))
     return <Video className="text-gray-500 dark:text-gray-300" />;
@@ -17,23 +17,28 @@ const getIcon = (name) => {
 function Trash() {
   const [files, setFiles] = useState([]);
 
-  // 🚀 Fetch from backend
+  // 🚀 Fetch from backend (auto refresh)
   useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/files`);
-        const data = await res.json();
-        setFiles(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  const fetchFiles = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/files`);
+      const data = await res.json();
 
-    fetchFiles();
-  }, []);
+      // ✅ FIX: filter from API response, not state
+      const deletedFiles = data.filter((file) => file.isDeleted === true);
 
-  // ⚠️ No deleted field yet in backend
-  const deletedFiles = files.filter((file) => file.deleted);
+      setFiles(deletedFiles);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchFiles();
+
+  const interval = setInterval(fetchFiles, 2000);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <div className="text-gray-900 dark:text-white">
@@ -42,14 +47,14 @@ function Trash() {
         🗑️ Trash
       </h2>
 
-      {deletedFiles.length === 0 ? (
+      {files.length === 0 ? (
         <p className="text-gray-500 dark:text-gray-400">
           Trash is empty.
         </p>
       ) : (
         <div className="space-y-4">
 
-          {deletedFiles.map((file) => (
+          {files.map((file) => (
             <div
               key={file.id}
               className="bg-gray-100 dark:bg-gray-800 
@@ -75,7 +80,7 @@ function Trash() {
               {/* Right Actions */}
               <div className="flex items-center gap-4">
 
-                {/* Restore (future API) */}
+                {/* Restore */}
                 <button
                   onClick={() => alert("Restore API coming soon")}
                   className="text-green-500 hover:text-green-700"
@@ -83,7 +88,7 @@ function Trash() {
                   <RotateCcw size={18} />
                 </button>
 
-                {/* Permanent Delete (future API) */}
+                {/* Permanent Delete */}
                 <button
                   onClick={() => alert("Permanent delete API coming soon")}
                   className="text-red-500 hover:text-red-700"

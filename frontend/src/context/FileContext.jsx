@@ -55,7 +55,7 @@ const addFolder = (name) => {
 
   // 🗑️ Move to Trash
 
-const deleteFile = async (id, fileUrl) => {
+const deleteFile = async (id) => {
   try {
     const res = await fetch(
       "https://qfsnl6ahcd.execute-api.ap-south-1.amazonaws.com/dev/delete",
@@ -64,28 +64,24 @@ const deleteFile = async (id, fileUrl) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          id: String(id),   // 🔥 ensure string
-          fileUrl,          // 🔥 include (important for S3 delete)
-        }),
+        body: JSON.stringify({ id: String(id) }),
       }
     );
 
     const data = await res.json();
 
     if (!res.ok) {
-      console.error("Delete error:", data);
       toast.error(data.message || "Delete failed ❌");
       return;
     }
 
-    // ✅ UPDATE UI instantly
+    // 🔥 IMPORTANT: remove from UI immediately
     setFiles((prev) => prev.filter((file) => file.id !== id));
 
-    toast.success("File deleted successfully 🗑️");
+    toast.success("Moved to Trash 🗑️");
 
   } catch (err) {
-    console.error("Delete error:", err);
+    console.error(err);
     toast.error("Delete failed ❌");
   }
 };

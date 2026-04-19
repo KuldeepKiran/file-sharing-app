@@ -16,7 +16,7 @@ function Dashboard({ search }) {
         const res = await fetch(`${BASE_URL}/files`);
         const data = await res.json();
 
-        setFiles(data);
+       setFiles(data.filter((f) => !f.isDeleted));
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch files ❌");
